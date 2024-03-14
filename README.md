@@ -16,7 +16,7 @@ The program is made to solve common problem calles knapsac, where you have to pu
 #### item_list
 In `/src` are two files one called `items_list.py` that generates database. To change the quantity of items change ***num_items***. Output file is calles `items_list.db` containing items with ***(id, weight, value, space)***, every single value is generated randomly.
 #### main
-The second file in `/src` is `main.py` that's the main core of the program containg every solution. Firstly it takes the database and read all the information then it's inserted into chosen algorithm *(more of them later)*. The algorithm is chosen by compiling the program and inserting appropriate value into terminal window. Options (data made on 40 item database):
+The second file in `/src` is `main.py` that's the main core of the program containg every solution. Firstly it takes the database and read all the information then it's inserted into chosen algorithm *(more of them later)*. The algorithm is chosen by compiling the program and inserting appropriate value into terminal window:
 
 <p align="center" width="100%">
     <img src="images/compiling.jpg">

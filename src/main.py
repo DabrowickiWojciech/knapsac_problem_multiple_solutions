@@ -27,7 +27,7 @@ conn.close()
 
 ''' linking item data  '''
 # Unpack items_data into weights and values lists
-items_data = sorted(items_data, key=lambda x: x[1] / x[0], reverse=True) # This line is required for tabu, branch algorithm
+items_data = sorted(items_data, key=lambda x: x[1] / x[0], reverse=True) # This line is required for tabu
 weights, values, spaces = zip(*items_data)
 
 ''' Functions for genetic algorithm '''
