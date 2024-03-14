@@ -17,7 +17,7 @@ limit = 3 # bee
 
 ''' Connectiong to the data base '''
 # Connect to the database
-conn = sqlite3.connect('items_learn.db')
+conn = sqlite3.connect('items_list.db')
 c = conn.cursor()
 
 # Fetch items from the database
