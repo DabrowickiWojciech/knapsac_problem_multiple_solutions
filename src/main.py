@@ -34,7 +34,7 @@ weights, values, spaces = zip(*items_data)
 # Initialize population randomly
 def initialize_population(population_size):
     # Initialize a population of size population_size with binary representation of items
-    population = np.random.randint(2, size=(population_size, len(weights)))
+    population = np.random.randint(2, size=(population_size, len(values)))
     return population.tolist()
 
 # Calculate fitness of each individual
@@ -103,7 +103,7 @@ def genetic_algorithm():
         
         # Selection, crossover, and mutation
         selected_population = selection(population, fitness_scores)
-        for i in range(int(population_size / 2)):
+        for _ in range(int(population_size / 2)):
             parent1, parent2 = selected_population
             child1, child2 = crossover(parent1, parent2)
             new_population.extend([child1, child2])
@@ -118,30 +118,30 @@ def genetic_algorithm():
 
 ''' Dynamic algorithm '''
 # Function to solve knapsack problem using dynamic programming
-def knapsack_dynamic(weights, values, max_weight, max_space):
-    n = len(weights)
+def knapsack_dynamic(weights, values, spaces, max_weight, max_space):
+    n = len(values)
     dp = [[0] * (max_space + 1) for _ in range(max_weight + 1)]
 
     for i in range(1, n + 1):
         for j in range(max_weight, -1, -1):
             for k in range(max_space, -1, -1):
-                if j >= weights[i - 1] and k >= 1:
-                    dp[j][k] = max(dp[j][k], dp[j - weights[i - 1]][k - 1] + values[i - 1])
+                if j >= weights[i - 1] and k >= spaces[i - 1] and k >= 1:
+                    dp[j][k] = max(dp[j][k], dp[j - weights[i - 1]][k - spaces[i - 1]]+ values[i - 1])
 
     return dp[max_weight][max_space]
 
 ''' Greedy algorithm '''
 # Function to solve knapsack problem using a greedy algorithm
-def knapsack_greedy(weights, values, max_weight, max_space):
+def knapsack_greedy(weights, values, spaces, max_weight, max_space):
     n = len(weights)
     total_weight = 0
     total_space = 0
     max_value = 0
 
     for i in range(n):
-        if total_weight + weights[i] <= max_weight and total_space + 1 <= max_space:
+        if total_weight + weights[i] <= max_weight and total_space + spaces[i] <= max_space:
             total_weight += weights[i]
-            total_space += 1
+            total_space += spaces[i]
             max_value += values[i]
     
     return max_value
@@ -166,7 +166,7 @@ def tabu_search():
     tabu_list = []
 
     # Perform iterations
-    for _ in range(iterations):
+    for i in range(iterations):
         neighbors = [move_operator(current_solution) for _ in range(population_size)]
 
         # Select the best non-tabu neighbor
@@ -192,101 +192,12 @@ def tabu_search():
             best_fitness = best_neighbor_fitness
             
         # Print generation and best fitness for monitoring
-        print("Generation:", iterations, "Best Fitness:", current_solution)
+        print("Generation:", i, "Best Fitness:", current_solution)
 
     return best_solution, best_fitness
 
-''' Branch and bound algorithm'''
-# Function to calculate upper bound of a node
-def calculate_upper_bound(weight, value, index, remaining_weight, remaining_space):
-    upper_bound = value
-    total_weight = weight
-    total_space = 1
-    while index < len(weights) and total_weight + weights[index] <= remaining_weight and total_space <= remaining_space:
-        upper_bound += values[index]
-        total_weight += weights[index]
-        total_space += 1
-        index += 1
-    if index < len(weights) and total_space <= remaining_space:
-        upper_bound += (remaining_weight - total_weight) * (values[index] / weights[index])
-    return upper_bound
-
-# Define the node structure for branch and bound
-class Node:
-    def __init__(self, index, weight, value, path, remaining_weight, remaining_space, upper_bound):
-        self.index = index
-        self.weight = weight
-        self.value = value
-        self.path = path
-        self.remaining_weight = remaining_weight
-        self.remaining_space = remaining_space
-        self.upper_bound = upper_bound
-
-# Branch and bound algorithm
-def branch_and_bound():
-    best_value = 0
-    best_path = []
-
-    initial_node = Node(0, 0, 0, [], max_weight, max_space, 0)
-    priority_queue = [initial_node]
-
-    while priority_queue:
-        node = priority_queue.pop(0)
-
-        if node.index == len(weights):
-            if node.value > best_value:
-                best_value = node.value
-                best_path = node.path
-            continue
-
-        include_node = Node(
-            node.index + 1,
-            node.weight + weights[node.index],
-            node.value + values[node.index],
-            node.path + [1],
-            node.remaining_weight - weights[node.index],
-            node.remaining_space - 1,
-            0
-        )
-
-        if include_node.weight <= max_weight and include_node.remaining_space >= 0:
-            include_node.upper_bound = calculate_upper_bound(include_node.weight, include_node.value, include_node.index, include_node.remaining_weight, include_node.remaining_space)
-            if include_node.upper_bound > best_value:
-                priority_queue.append(include_node)
-
-        exclude_node = Node(
-            node.index + 1,
-            node.weight,
-            node.value,
-            node.path + [0],
-            node.remaining_weight,
-            node.remaining_space,
-            0
-        )
-
-        exclude_node.upper_bound = calculate_upper_bound(exclude_node.weight, exclude_node.value, exclude_node.index, exclude_node.remaining_weight, exclude_node.remaining_space)
-        if exclude_node.upper_bound > best_value:
-            priority_queue.append(exclude_node)
-
-        priority_queue.sort(key=lambda x: -x.upper_bound)
-
-    return best_value, best_path
-
 ''' Bee algorythm '''
-# Function to calculate fitness of a solution
-def calculate_fitness(individual):
-    total_weight = np.sum(np.array(weights) * np.array(individual))
-    total_space = np.sum(individual)
-    total_value = np.sum(np.array(values) * np.array(individual))
-    if total_weight > max_weight or total_space > max_space:
-        return 0
-    else:
-        return total_value
-
-# Function to generate initial solutions
-def generate_solutions():
-    return [np.random.randint(2, size=len(weights)) for _ in range(bee_count)]
-
+#From genethic:  calculate_fitness(), initialize_population()
 # Function to perform local search on a solution
 def local_search(solution):
     best_solution = solution.copy()
@@ -313,7 +224,7 @@ def bee_algorithm():
     best_fitness = 0
     abandon_count = np.zeros(bee_count)
 
-    solutions = generate_solutions()
+    solutions = initialize_population(population_size)
 
     for _ in range(iterations):
         for i, solution in enumerate(solutions):
@@ -329,6 +240,7 @@ def bee_algorithm():
             else:
                 solutions[i] = np.random.randint(2, size=len(weights))
                 abandon_count[i] = 0
+            print("Generation:", i, "Best Fitness:", local_solution)
 
     return best_solution, best_fitness
 
@@ -337,7 +249,7 @@ def bee_algorithm():
 def main():
     option = 1
     ''' Selecting algorithm '''
-    option = int(input("Select the algorithm you want to use \n(1) - Genetic algorithm\n(2) - Dynamic algorithm\n(3) - Greedy algorithm\n(4) - Tabu search algorithm\n(5) - Branch and bound algorithm\n(6) - Bee algorithm\nInput: "))
+    option = int(input("Select the algorithm you want to use \n(1) - Genetic algorithm\n(2) - Dynamic algorithm\n(3) - Greedy algorithm\n(4) - Tabu search algorithm\n(5) - Bee algorithm\nInput: "))
     
     if option == 1:
         # Run the genetic algorithm
@@ -348,13 +260,13 @@ def main():
         print("Achieved at generation:", best_generation)
     elif option == 2:
         # Solve knapsack problem using dynamic programming
-        max_value = knapsack_dynamic(weights, values, max_weight, max_space)
+        max_value = knapsack_dynamic(weights, values, spaces, max_weight, max_space)
 
         # Output the result
         print("Maximum value that can be obtained:", max_value)
     elif option == 3:
         # Solve knapsack problem using greedy algorithm
-        max_value_greedy = knapsack_greedy(weights, values, max_weight, max_space)
+        max_value_greedy = knapsack_greedy(weights, values, spaces, max_weight, max_space)
 
         # Output the result
         print("Maximum value that can be obtained using greedy algorithm:", max_value_greedy)    
@@ -365,14 +277,7 @@ def main():
         # Output the best solution and its fitness
         print("Best solution:", best_solution)
         print("Best fitness:", best_fitness)    
-    elif option == 5:
-        # Solve knapsack problem using Branch and Bound algorithm
-        best_value, best_path = branch_and_bound()
-
-        # Output the result
-        print("Best value that can be obtained using branch and bound:", best_value)
-        print("Items selected:", best_path)
-    elif option == 6:    
+    elif option == 5:    
         # Run Bee Algorithm
         best_solution, best_fitness = bee_algorithm()
 

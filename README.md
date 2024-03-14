@@ -9,7 +9,6 @@
     - [Dynamic algorithm](#dynamic-algorithm)
     - [Greedy algorithm](#greedy-algorithm)
     - [Tabu search](#tabu-search)
-    - [Branch and bound](#branch-n-bound)
     - [Bee algorithm](#bee-algorithm)
 ### Introduction
 The program is made to solve common problem calles knapsac, where you have to put as many valuable items as possible into a backpack with limits. My solution is based on backpack ***max_weight*** and ***max_space*** and fitness function is the determinant on how good the solution is.
@@ -19,15 +18,6 @@ In `/src` are two files one called `items_list.py` that generates database. To c
 #### main
 The second file in `/src` is `main.py` that's the main core of the program containg every solution. Firstly it takes the database and read all the information then it's inserted into chosen algorithm *(more of them later)*. The algorithm is chosen by compiling the program and inserting appropriate value into terminal window. Options (data made on 40 item database):
 
-| input value | algorithm | speed | accuracy |
-| 1 | Genetic algorithm | fast | good |
-| 2 | Dynamic algorithm | fast | perfect |
-| 3 | Greedy algorithm | fast | perfect |
-| 4 | Tabu search | fast | good |
-| 5 | Branch and bound | slow | good |
-| 6 | Bee algorithm | moderate | moderate |
-
-Compiled program in terminal shows:
 <p align="center" width="100%">
     <img src="images/compiling.jpg">
 </p>
@@ -47,7 +37,5 @@ Dynamic Programming (DP) breaks down a problem into smaller, overlapping subprob
 Greedy Algorithm makes locally optimal choices at each step with the hope of finding a globally optimal solution. It iteratively selects the best available option at each stage without considering the overall problem, often leading to a suboptimal solution.
 #### Tabu search
 Tabu Search Algorithm explores the solution space iteratively by making moves based on a defined neighborhood structure while keeping track of previously visited solutions in a tabu list. It aims to escape local optima by forbidding certain moves for a limited number of iterations, promoting diversification, and ultimately converging to better solutions.
-#### Branch and bound
-Branch and Bound Algorithm recursively explores the solution space by systematically enumerating all possible solutions while pruning branches that are known to be suboptimal based on a lower bound. It uses a systematic search strategy to find the globally optimal solution efficiently, particularly for combinatorial optimization problems like the knapsack problem.
 #### Bee algorithm
 Bee Algorithm iteratively improves solutions by employing employed bees, onlooker bees, and scout bees. Employed bees explore local solutions, onlooker bees select promising solutions based on employed bees' information, and scout bees perform global exploration by discovering new solutions. This process balances exploration and exploitation to find high-quality solutions efficiently.
