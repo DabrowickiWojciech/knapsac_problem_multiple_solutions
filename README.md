@@ -26,6 +26,7 @@ The second file in `/src` is `main.py` that's the main core of the program conta
 | 4 | Tabu search | fast | good |
 | 5 | Branch and bound | slow | good |
 | 6 | Bee algorithm | moderate | moderate |
+
 Compiled program in terminal shows:
 <p align="center" width="100%">
     <img src="images/compiling.jpg">
