@@ -1,4 +1,4 @@
-# Knapsac Problem
+# napsac Problem
 ## Table of contents
 - [Introduction](#introduction)
 - [How to use](#how-to-use)
